@@ -4,12 +4,12 @@ import RandomGenerator
 import java.math.BigInteger
 
 class LCG(
-    userId: Int,
-    lastRandom: BigInteger,
+    val userId: Int,
+    val lastRandom: Long,
     val a: BigInteger,
     val c: BigInteger,
     val m: BigInteger
-) : RandomGenerator(userId, lastRandom) {
+) : RandomGenerator() {
 
-    override fun nextRandom(prev: BigInteger) = (prev * a + c).mod(m)
+    override fun nextRandom(prev: Long): Long = (BigInteger.valueOf(prev) * a + c).mod(m).toInt().toLong()
 }

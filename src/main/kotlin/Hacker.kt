@@ -5,7 +5,7 @@ interface Hacker<T : RandomGenerator> {
     suspend fun hack(api: Api): T
 }
 
-abstract class RandomGenerator(val userId: Int, val lastRandom: BigInteger) {
+abstract class RandomGenerator() {
 
-    abstract fun nextRandom(prev: BigInteger = BigInteger.ZERO): BigInteger
+    abstract fun nextRandom(prev: Long = 0): Long
 }

@@ -13,7 +13,7 @@ class ProdApi : Api {
         return req("/createacc?id=$id", User::class.java)
     }
 
-    override suspend fun makeBet(mode: String, playerId: Int, bet: Int, number: Int): BetResult {
+    override suspend fun makeBet(mode: String, playerId: Int, bet: Int, number: Long): BetResult {
         return req("/play$mode?id=$playerId&bet=$bet&number=$number", BetResult::class.java)
     }
 

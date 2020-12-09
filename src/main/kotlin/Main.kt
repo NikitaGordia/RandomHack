@@ -1,5 +1,9 @@
 import api.ProdApi
 import kotlinx.coroutines.runBlocking
+import lcg.LCG
+import lcg.LCGHacker
+import mt.MT
+import mt.MTHacket
 import kotlin.math.max
 
 fun main() {
@@ -7,19 +11,40 @@ fun main() {
     val api: Api = ProdApi()
 
     runBlocking {
-//        val lcgGenerator = LCGHacker().hack(api)
-//        hack(api, lcgGenerator)
+        hackViaMT(api)
+        hackViaLCG(api)
     }
 }
 
-suspend fun hack(api: Api, generator: RandomGenerator) {
+suspend fun hackViaLCG(api: Api) {
+    val lcgGenerator = LCGHacker().hack(api)
+    hack(api, lcgGenerator)
+}
+
+suspend fun hackViaMT(api: Api) {
+    val mtGenerator = MTHacket().hack(api)
+    hack(api, mtGenerator)
+}
+
+suspend fun hack(api: Api, generator: MT) {
+    var user = User(0, 0, "")
+    while (user.money < 1000000) {
+        val betNum = generator.nextRandom()
+        println("Next bet -> $betNum, cash -> ${user.money}")
+        val resp = api.makeBet("Mt", generator.userId, max(user.money, 900), betNum)
+        user = resp.account
+    }
+    println("BOOOM! You are millioner via MT! $$$$$$$$$$$$$$$")
+}
+
+suspend fun hack(api: Api, generator: LCG) {
     var user = User(0, 0, "")
     var lastRand = generator.lastRandom
     while (user.money < 1000000) {
         lastRand = generator.nextRandom(lastRand)
         println("Next bet -> $lastRand, cash -> ${user.money}")
-        val resp = api.makeBet("Lcg", generator.userId, max(user.money, 970), lastRand.toInt())
+        val resp = api.makeBet("Lcg", generator.userId, max(user.money, 900), lastRand.toInt().toLong())
         user = resp.account
     }
-    println("BOOOM! You are millioner! $$$$$$$$$$$$$$$")
+    println("BOOOM! You are millioner via LCG! $$$$$$$$$$$$$$$")
 }

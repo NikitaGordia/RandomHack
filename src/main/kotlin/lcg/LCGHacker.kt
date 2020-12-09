@@ -15,7 +15,7 @@ class LCGHacker : Hacker<LCG> {
         val seq = mutableListOf<Int>()
         val seqSize = 30
         for (i in 1..seqSize)
-            seq.add(api.makeBet("LCG", user.id, 1, seq.lastOrNull()?.toInt() ?: 1).realNumber)
+            seq.add(api.makeBet("Lcg", user.id, 1, seq.lastOrNull()?.toLong() ?: 1L).realNumber.toInt())
 
         val bigSeq = seq.map { BigInteger.valueOf(it.toLong()) }
 
@@ -27,13 +27,15 @@ class LCGHacker : Hacker<LCG> {
         val a = getA(train[0], train[1], train[2], m)
         val c = getC(train[0], train[1], a, m)
 
-        val lcg = LCG(user.id, test.last(), a = a, c = c, m = m)
+        val lcg = LCG(user.id, test.last().toInt().toLong(), a = a, c = c, m = m)
         val res = (0 until testSize).map {
-            lcg.nextRandom(test.getOrNull(it - 1) ?: train.last())
+            lcg.nextRandom((test.getOrNull(it - 1)?.toInt() ?: train.last().toInt()).toLong())
         }
         return lcg.takeIf {
             (0 until testSize).all {
                 test[it].toInt() == res[it].toInt()
+            }.also {
+                if (it) println("LCG params found: a=$a, c=$c, m=$m")
             }
         } ?: throw Exception("Can not find params! Try again")
     }
