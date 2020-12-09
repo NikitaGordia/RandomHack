@@ -1,4 +1,6 @@
 import api.ProdApi
+import bmt.BMT
+import bmt.BMTHacker
 import kotlinx.coroutines.runBlocking
 import lcg.LCG
 import lcg.LCGHacker
@@ -11,8 +13,9 @@ fun main() {
     val api: Api = ProdApi()
 
     runBlocking {
-        hackViaMT(api)
-        hackViaLCG(api)
+//        hackViaMT(api)
+//        hackViaLCG(api)
+        hackViaBMT(api)
     }
 }
 
@@ -24,6 +27,22 @@ suspend fun hackViaLCG(api: Api) {
 suspend fun hackViaMT(api: Api) {
     val mtGenerator = MTHacket().hack(api)
     hack(api, mtGenerator)
+}
+
+suspend fun hackViaBMT(api: Api) {
+    val mtGenerator = BMTHacker().hack(api)
+    hack(api, mtGenerator)
+}
+
+suspend fun hack(api: Api, generator: BMT) {
+    var user = User(0, 0, "")
+    while (user.money < 1000000) {
+        val betNum = generator.nextRandom()
+        println("Next bet -> $betNum, cash -> ${user.money}")
+        val resp = api.makeBet("BetterMt", generator.userId, max(user.money, 300), betNum)
+        user = resp.account
+    }
+    println("BOOOM! You are millioner via MT! $$$$$$$$$$$$$$$")
 }
 
 suspend fun hack(api: Api, generator: MT) {

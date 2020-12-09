@@ -2,7 +2,6 @@ package mt
 
 import Api
 import Hacker
-import java.math.BigInteger
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.random.Random
@@ -25,6 +24,7 @@ class MTHacket : Hacker<MT> {
                 if ((0 until seqSize).all {
                     res[it] == seq[it]
                 }) {
+                    println("DIFF -> ${(user.getDeletionDate().time / 1000 + TimeUnit.HOURS.toSeconds(2)).toInt() - tm}")
                     println("Seed for MT: $tm")
                     return mt
                 }
